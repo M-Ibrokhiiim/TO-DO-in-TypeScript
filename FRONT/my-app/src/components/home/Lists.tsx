@@ -101,7 +101,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
               color={'blue.600'}
               fontFamily={'cursive'}
             >
-              Tasks
+              Notes
             </Text>
             <Box
               h={{ base: '70%', lg: '80%' }}
