@@ -10,7 +10,7 @@ export default function Delete({id,loading,setLoading}){
             setActive(false)
         },200)
         try{
-            const response = await fetch(`http://localhost:3000/removalTask/${id}`,{
+            const response = await fetch(`http://localhost:3000/tasks/delete/${id}`,{
                 method:'DELETE'
             }) 
             

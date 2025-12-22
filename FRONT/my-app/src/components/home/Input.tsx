@@ -3,7 +3,7 @@ import {ToastContainer, toast} from 'react-toastify'
 
 import { useState } from 'react';
 
-export default function INPUT({setLoading,loading}){
+export default function INPUT({setLoading,loading}:{setLoading:()=>void,loading:boolean}){
     const [task,setTask] = useState('')
  
 
@@ -12,7 +12,7 @@ export default function INPUT({setLoading,loading}){
            try{
             if(task==='') return
 
-            const res = await fetch('http://localhost:3000/newTask',{
+            const res = await fetch('http://localhost:3000/tasks/newTask',{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'
@@ -37,12 +37,13 @@ export default function INPUT({setLoading,loading}){
            }
         }
 
-    const addTasksByEnter=async(task,e)=>{
+    const addTasksByEnter=async(task:string,e)=>{
+        
             if(e.key ==='Enter'){
                try{
             if(task==='') return
 
-            const res = await fetch('http://localhost:3000/newTask',{
+            const res = await fetch('http://localhost:3000/tasks/newTask',{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json'

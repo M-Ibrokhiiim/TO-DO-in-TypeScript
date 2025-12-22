@@ -34,10 +34,14 @@ export default function LISTS({loading,setLoading}){
         }
     }
 //  PUT request   
-    const taskIsDone = async(id:number)=>{
+    const taskIsDone = async(id:number,name:string,isDone:boolean)=>{
         try{
-            const response = await fetch(`http://localhost:3000/task/${id}/done`,{
-                method:'PUT'
+            const response = await fetch(`http://localhost:3000/tasks/update/${id}`,{
+                method:'PUT',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({id:id,name:name,isDone:isDone})
             });
 
             if(!response.ok){
@@ -45,40 +49,40 @@ export default function LISTS({loading,setLoading}){
             }
             TASKS();
 
-            const data = response.json();
+            const data =await response.json();
             console.log(data)
         }catch(err){
            console.log(err)
         }
     }
 
- const taskEditorByEnterBTN =async(e,id:number,name:string)=>{
+//  const taskEditorByEnterBTN =async(e,id:number,name:string)=>{
 
-    if(e.key === 'Enter' && name.length > 0){
-    try{
-       const res = await fetch(`http://localhost:3000/task/${id}/edited`,{
-        method:'PUT',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify({name:name})
-       })
+//     if(e.key === 'Enter' && name.length > 0){
+//     try{
+//        const res = await fetch(`http://localhost:3000/tasks/update/${id}`,{
+//         method:'PUT',
+//         headers:{
+//             'Content-Type':'application/json'
+//         },
+//         body:JSON.stringify({name:name})
+//        })
 
-       if(!res.ok){
-        throw new Error('Error occured white editing!')
-       }
-       TASKS()
-       const data = await res.json();
-       toast.success(data.msg,{
-        autoClose:1500
-       })
+//        if(!res.ok){
+//         throw new Error('Error occured white editing!')
+//        }
+//        TASKS()
+//        const data = await res.json();
+//        toast.success(data.msg,{
+//         autoClose:1500
+//        })
 
-       setEdited(!isEdited)
-    }catch(err){
-        console.log(err)
-    }
-    }
- }   
+//        setEdited(!isEdited)
+//     }catch(err){
+//         console.log(err)
+//     }
+//     }
+//  }   
     useEffect(()=>{
          TASKS()
     },[loading])
@@ -94,16 +98,16 @@ export default function LISTS({loading,setLoading}){
                         return(
                     <Flex mt='2'  justifyContent={'space-between'}>
                          {!isEdited ?
-                         <Checkbox.Root cursor={'pointer'} overflow={'scroll'} w={{base:"200px", md:"450px"}} onClick={()=>{taskIsDone(task.id)}}>
+                         <Checkbox.Root cursor={'pointer'} overflow={'scroll'} w={{base:"200px", md:"450px"}} onClick={()=>{taskIsDone(task.id,task.name,!task.isDone)}}>
                            <input type="checkbox" style={{width:"30px",height:"20px"}} checked={task.isDone}/>
                             <Checkbox.Label fontSize={{base:'15px',md:'22px'}} textDecoration={task.isDone ? 'line-through' :'none'}>{task.name}</Checkbox.Label> 
                           </Checkbox.Root>  
                             : <>
                             {
-                                isEditableTASK === task.id ? <Input borderTop={'none'} key={task.id} fontSize={'20px'} borderRight={'none'} onKeyDown={(e)=>{taskEditorByEnterBTN(e,task.id,editableTask)}} value={editableTask} onChange={(e)=>{setEditable(e.target.value)}} autoFocus borderLeft={'none'} outline={'none'} borderRadius={'none'} /> 
+                                isEditableTASK === task.id ? <Input borderTop={'none'} key={task.id} fontSize={'20px'} borderRight={'none'}  value={editableTask} onChange={(e)=>{setEditable(e.target.value)}} autoFocus borderLeft={'none'} outline={'none'} borderRadius={'none'} /> 
                                 : <>
                                 <Flex mt='2'  justifyContent={'space-between'}>
-                                  <Checkbox.Root cursor={'pointer'} overflow={'scroll'} w={{base:"200px", md:"250px"}} onClick={()=>{taskIsDone(task.id)}}>
+                                  <Checkbox.Root cursor={'pointer'} overflow={'scroll'} w={{base:"200px", md:"250px"}} onClick={()=>{taskIsDone(task.id,task.name,!task.isDone)}}>
                                     <input type="checkbox" style={{width:"30px",height:"20px"}} checked={task.isDone}/>
                                     <Checkbox.Label fontSize={{base:'15px',md:'22px'}} textDecoration={task.isDone ? 'line-through' :'none'}>{task.name}</Checkbox.Label> 
                                   </Checkbox.Root>           
@@ -114,12 +118,13 @@ export default function LISTS({loading,setLoading}){
                            }
                         
                     <Flex   alignItems={'center'} w={'70px'} bg='white' justifyContent={'space-between'}>
-                        { isEdited && isEditableTASK ===task.id ? <CHECK
+                        { isEdited && isEditableTASK === task.id ? <CHECK
                           taskId = {task.id}
                           taskName={editableTask}
                           isEdited={isEdited} 
                           setEdited={setEdited}
                           uiUpdater={TASKS}
+                          taskDone = {task.isDone}
                         />  
                           :<Edit setEdited ={setEdited}
                          isEdited={isEdited} 

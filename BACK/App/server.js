@@ -14,6 +14,7 @@ const _dirName = path.dirname(_fileName);
 const server = express()
 server.use(cors())
 
+
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json())
 
@@ -56,6 +57,7 @@ server.delete('/removalTask/:id',async(req,res)=>{
    await fs.writeFile(path.join(_dirName,'DATA','TASKS.json'),JSON.stringify(filteredTasks))
    res.json({success:true,msg:'Task removed!'})
 })
+
 
 // PUT for TASKDONE
 server.put('/task/:id/done',async(req,res)=>{
