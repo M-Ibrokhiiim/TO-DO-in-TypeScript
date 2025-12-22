@@ -8,7 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 // TypeScript interfaces
 interface Task {
   id: number;
-  name: string;
+  content: string;
   isDone: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -51,7 +51,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
   // PUT request
   const taskIsDone = async (
     id: number,
-    name: string,
+    content: string,
     isDone: boolean
   ): Promise<void> => {
     try {
@@ -60,7 +60,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ id, name, isDone })
+        body: JSON.stringify({ id, content, isDone })
       });
 
       if (!response.ok) {
@@ -118,7 +118,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
                         cursor={'pointer'}
                         overflow={'scroll'}
                         w={{ base: "200px", md: "450px" }}
-                        onClick={() => { taskIsDone(task.id, task.name, !task.isDone) }}
+                        onClick={() => { taskIsDone(task.id, task.content, !task.isDone) }}
                       >
                         <input
                           type="checkbox"
@@ -130,7 +130,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
                           fontSize={{ base: '15px', md: '22px' }}
                           textDecoration={task.isDone ? 'line-through' : 'none'}
                         >
-                          {task.name}
+                          {task.content}
                         </Checkbox.Label>
                       </Checkbox.Root>
                     ) : (
@@ -154,7 +154,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
                               cursor={'pointer'}
                               overflow={'scroll'}
                               w={{ base: "200px", md: "250px" }}
-                              onClick={() => { taskIsDone(task.id, task.name, !task.isDone) }}
+                              onClick={() => { taskIsDone(task.id, task.content, !task.isDone) }}
                             >
                               <input
                                 type="checkbox"
@@ -166,7 +166,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
                                 fontSize={{ base: '15px', md: '22px' }}
                                 textDecoration={task.isDone ? 'line-through' : 'none'}
                               >
-                                {task.name}
+                                {task.content}
                               </Checkbox.Label>
                             </Checkbox.Root>
                           </Flex>
@@ -189,7 +189,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
                           setEdited={setEdited}
                           isEdited={isEdited}
                           setEditable={setEditable}
-                          inputField={task.name}
+                          inputField={task.content}
                           editableTASK={setIsEditableTASK}
                           taskID={task.id}
                         />

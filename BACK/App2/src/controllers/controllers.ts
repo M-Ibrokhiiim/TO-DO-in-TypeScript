@@ -7,8 +7,10 @@ import fs from "fs/promises"
 // Type checking
 interface taskTypes{
     id?:number,
-    name:string,
-    isDone?:boolean
+    content:string,
+    isDone?:boolean,
+    createrDate?:string,
+    updatedDate?:string
 }
 
 // Access to dirname and filename
@@ -19,9 +21,9 @@ const _dirName =path.dirname(_fileName)
 
 // POST
 export const createNotes = async(req:Request,res:Response)=>{
-         const { name }:taskTypes= req.body
+         const { content }:taskTypes= req.body
          // Validation
-        if(!req.body || name.length === 0 ){
+        if(content.length === 0 ){
             res.status(400).send("Required field missed --> CHECK name or isDone)")
         }
      
@@ -32,15 +34,15 @@ export const createNotes = async(req:Request,res:Response)=>{
          let isExist:boolean;
      
          const isExistTask = isJSON_db.filter((task:taskTypes)=>{
-             return task.name === name
+             return task.content === content
          });
          
          if(isExistTask.length !== 0){
              isExist = true
          }else{
-             const newTask = {id:isJSON_db.length+1,name:name,isDone:false}
+             const newTask = {id:isJSON_db.length+1,content:content,createdDate:String(new Date()),isDone:false}
              isJSON_db.push(newTask)
-             await fs.writeFile(path.join(_dirName,'..',"DATA","TASKS.json"),JSON.stringify(isJSON_db))
+             await fs.writeFile(path.join(_dirName,'..',"DATA","TASKS.json"),JSON.stringify(isJSON_db, null, 2))
              isExist=false
          };
      
@@ -60,31 +62,52 @@ export const readNotes = async(req:Request,res:Response)=>{
 
 // PUT
 export const updateNotes = async(req:Request,res:Response)=>{
-        const name= req.body.name
+        const content= req.body.content
         const id:number = Number(req.params.id)
         
         // Validation
-        if(!id || name.trim()==="" ){
+        if(!id || content.trim()==="" ){
           res.status(400).json({success:false,msg:"Sorry, you missed reuqired field..."})
         }
     
         // Business logic
         try{
-            const came_task = req.body
-    
+            let isExist:(boolean  | undefined);
+
             const read_db = await fs.readFile(path.join(_dirName,'..','DATA',"TASKS.json"),"utf8")
             const isJSON_db = JSON.parse(read_db)
-    
-            const updatedTasks = isJSON_db.filter((task:taskTypes)=>{
-                return task.id !== id
+            
+            const findExistNote = isJSON_db.filter((note:taskTypes)=>{
+                return note.id ===id
+            }) 
+            
+
+            isJSON_db.forEach((task:taskTypes)=>{
+                if(task.content.trim()=== req.body.content){
+                    return isExist =true
+                }else{
+                    return isExist = false
+                }
             })
             
-            updatedTasks.push(came_task)
-            await fs.writeFile(path.join(_dirName,'..','DATA','TASKS.json'),JSON.stringify(updatedTasks))
-    
+
+            if(isExist){
+                throw new Error('Sorry, you have same note that you wanted edit!')
+            }
+            
+            const updatedTasks = isJSON_db.filter((task:taskTypes)=>{
+                return task.id !== id
+            })  
+          
+            const updatedNote = {id:id,content:req.body.content,updatedDate:String(new Date()),createdDate:findExistNote[0].createdDate,isDone:req.body.isDone }
+                
+            updatedTasks.push(updatedNote)
+            await fs.writeFile(path.join(_dirName,'..','DATA','TASKS.json'),JSON.stringify(updatedTasks, null, 2))
+
             res.status(200).json({success:true,msg:"Task  successfully updated!"})
-        }catch(err){
-            console.log(err)
+
+        }catch(err:any){
+             res.status(400).json({success:false,msg:err.message})
         }
 
 }
@@ -107,7 +130,7 @@ export const deleteNotes = async(req:Request,res:Response)=>{
             return task.id !== id
            })
            
-           await fs.writeFile(path.join(_dirName,'..','DATA','TASKS.json'),JSON.stringify(filtered_db))
+           await fs.writeFile(path.join(_dirName,'..','DATA','TASKS.json'),JSON.stringify(filtered_db,null,2))
     
            res.status(200).json({success:true,msg:"Task successfully deleted!"})
 

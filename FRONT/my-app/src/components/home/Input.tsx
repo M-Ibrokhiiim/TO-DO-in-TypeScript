@@ -21,7 +21,7 @@ export default function INPUT({ setLoading, loading }: InputProps) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: task })
+        body: JSON.stringify({ content: task })
       });
 
       if (!res.ok) {
@@ -41,7 +41,7 @@ export default function INPUT({ setLoading, loading }: InputProps) {
     }
   };
 
-  // ✅ Proper type for keyboard event
+  // Proper type for keyboard event
   const addTasksByEnter = async (
     task: string,
     e: React.KeyboardEvent<HTMLInputElement>
@@ -55,7 +55,7 @@ export default function INPUT({ setLoading, loading }: InputProps) {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ name: task })
+          body: JSON.stringify({ content: task })
         });
 
         if (!res.ok) {

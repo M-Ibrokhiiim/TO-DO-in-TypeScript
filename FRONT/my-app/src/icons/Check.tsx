@@ -25,7 +25,7 @@ export default function CHECK({
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ id, name: task, isDone })
+        body: JSON.stringify({ id, content: task, isDone })
       });
 
       if (!res.ok) {
