@@ -85,11 +85,7 @@ export class notesService{
                         return note.id === came_id
                     }) 
                     
-                    isJSON_db.forEach((task:taskTypes)=>{
-                        if(task.content.trim()=== content){
-                            throw new Error("'Sorry, you have same note that you wanted edit!'")   
-                        } 
-                    })
+                    
                     
                     const updatedTasks = isJSON_db.filter((task:taskTypes)=>{
                         return task.id !== came_id
