@@ -18,7 +18,7 @@ export default function Delete({ id, loading, setLoading }: DeleteProps) {
     }, 200);
 
     try {
-      const response = await fetch(`http://localhost:3000/api/tasks/delete/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/notes/delete/${id}`, {
         method: 'DELETE'
       });
 

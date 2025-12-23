@@ -117,5 +117,25 @@ export class notesService{
            await fs.writeFile(path.join(_dirName,'..','DATA','TASKS.json'),JSON.stringify(filtered_db,null,2))
           
            return isSuccess =true
-    }                
+    }   
+    
+    // BONUS(Searching)
+    async searchByKeyboards(query:string){
+    
+    if(!query || query.trim().length ===0 ){
+        throw new Error("Sorry, query length must be longer than 1 letter")
+    }
+
+
+    const read_db = await fs.readFile(path.join(_dirName,'..','DATA','TASKS.json'),'utf8')
+    const isJSON_db:CreateNoteDTO[] = JSON.parse(read_db) 
+
+    const foundNotes = isJSON_db.filter(note=>{
+        let word = Array.from(note.content).filter(letter => letter !==" ").join("")
+        let key:string = Array.from(query).filter((l)=>l !==" ").join('') 
+        return word.toLocaleLowerCase().startsWith(key.toLocaleLowerCase()) ||  word.toLocaleLowerCase() === key.toLocaleLowerCase()
+    })
+    
+    return foundNotes
+    }
 }

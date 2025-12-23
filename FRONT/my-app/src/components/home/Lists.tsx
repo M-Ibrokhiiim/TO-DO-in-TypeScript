@@ -34,7 +34,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
   // TASKS API
   const TASKS = async (): Promise<void> => {
     try {
-      const response = await fetch('http://localhost:3000/api/tasks');
+      const response = await fetch('http://localhost:3000/api/notes');
       
       if (!response.ok) {
         throw new Error('Failed to fetch tasks');
@@ -55,7 +55,7 @@ export default function LISTS({ loading, setLoading }: ListsProps) {
     isDone: boolean
   ): Promise<void> => {
     try {
-      const response = await fetch(`http://localhost:3000/api/tasks/update/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/notes/update/${id}`, {
         method: 'PUT',
         headers: {
           "Content-Type": "application/json"

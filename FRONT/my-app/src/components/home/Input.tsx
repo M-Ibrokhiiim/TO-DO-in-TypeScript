@@ -16,7 +16,7 @@ export default function INPUT({ setLoading, loading }: InputProps) {
     try {
       if (task === '') return;
 
-      const res = await fetch('http://localhost:3000/api/tasks/newTask', {
+      const res = await fetch('http://localhost:3000/api/notes/newTask', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ export default function INPUT({ setLoading, loading }: InputProps) {
       try {
         if (task === '') return;
 
-        const res = await fetch('http://localhost:3000/api/tasks/newTask', {
+        const res = await fetch('http://localhost:3000/api/notes/newTask', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -59,7 +59,6 @@ export default function INPUT({ setLoading, loading }: InputProps) {
         });
 
         if (!res.ok) {
-          console.log(res);
           toast.info('Task already exist!', { autoClose: 2400 });
           setTask('');
           throw new Error('Backend error!');

@@ -20,7 +20,7 @@ export default function CHECK({
     setEdited(!isEdited);
 
     try {
-      const res = await fetch(`http://localhost:3000/api/tasks/update/${id}`, {
+      const res = await fetch(`http://localhost:3000/api/notes/update/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
