@@ -105,10 +105,10 @@ Make sure you have the following installed on your machine:
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/tasks` | Get all notes |
-| POST | `/tasks/newTask` | Create a new note |
-| PUT | `/tasks/update/:id` | Update a note by ID |
-| DELETE | `/tasks/delete/:id` | Delete a note by ID |
+| GET | `/notes` | Get all notes |
+| POST | `/notes/newTask` | Create a new note |
+| PUT | `/notes/update/:id` | Update a note by ID |
+| DELETE | `/notes/delete/:id` | Delete a note by ID |
 
 ---
 
