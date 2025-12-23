@@ -4,22 +4,14 @@ import fs from "fs/promises"
 
 
 // Type annotations
-export interface CreateNoteDTO{
+export interface NotesDTO{
   id?:number,
   content:string,
   updatedDate?:string,
   createdDate?:string,
   isDone:boolean
 }
-
-export interface taskTypes{
-    id?:number,
-    content:string,
-    createdDate?:string,
-    updatedDate?:string,
-    isDone:boolean
-}
-
+ 
 
 // Access to dirname and filename
 const _fileName = url.fileURLToPath(import.meta.url)
@@ -28,12 +20,12 @@ const _dirName =path.dirname(_fileName)
 
 export class notesService{
     // CREATE
-    async createNotes(data:CreateNoteDTO){
+    async createNotes(data:NotesDTO){
          const { content } = data
          let isExist:(boolean);
          let success:(boolean);
         
-           if(content.length === 1 ){
+           if(content.trim().length === 0 ){
                 throw new Error("Sorry, content must be longer that 1 letter")
             }
              
@@ -42,7 +34,7 @@ export class notesService{
                  
             
              
-            const isExistTask = isJSON_db.filter((task:taskTypes)=>{
+            const isExistTask = isJSON_db.filter((task:NotesDTO)=>{
                      return task.content === content
             });
             
@@ -67,7 +59,7 @@ export class notesService{
     }
 
     // PUT
-    async updateNotes (data:CreateNoteDTO,id:string){
+    async updateNotes (data:NotesDTO,id:string){
              let isSuccess:(boolean);
              const content=data.content
              const came_id:number = Number(id)
@@ -81,17 +73,17 @@ export class notesService{
                     const read_db = await fs.readFile(path.join(_dirName,'..','DATA',"TASKS.json"),"utf8")
                     const isJSON_db = JSON.parse(read_db)
                     
-                    const findExistNote = isJSON_db.filter((note:taskTypes)=>{
+                    const findExistNote = isJSON_db.filter((note:NotesDTO)=>{
                         return note.id === came_id
                     }) 
                     
                     
                     
-                    const updatedTasks = isJSON_db.filter((task:taskTypes)=>{
+                    const updatedTasks = isJSON_db.filter((task:NotesDTO)=>{
                         return task.id !== came_id
                     })  
                   
-                    const updatedNote:taskTypes = {id:came_id,content:content,updatedDate:String(new Date()),createdDate:findExistNote[0].createdDate,isDone:data.isDone }
+                    const updatedNote:NotesDTO = {id:came_id,content:content,updatedDate:String(new Date()),createdDate:findExistNote[0].createdDate,isDone:data.isDone }
                         
                     updatedTasks.push(updatedNote)
                     await fs.writeFile(path.join(_dirName,'..','DATA','TASKS.json'),JSON.stringify(updatedTasks, null, 2))
@@ -110,7 +102,7 @@ export class notesService{
            const read_db = await fs.readFile(path.join(_dirName,'..','DATA','TASKS.json'),'utf8')
            const isJSON_db = JSON.parse(read_db)
     
-           const filtered_db:taskTypes[] = isJSON_db.filter((task:taskTypes)=>{
+           const filtered_db:NotesDTO[] = isJSON_db.filter((task:NotesDTO)=>{
             return task.id !== Number(id)
            })
            
@@ -120,22 +112,20 @@ export class notesService{
     }   
     
     // BONUS(Searching)
-    async searchByKeyboards(query:string){
-    
-    if(!query || query.trim().length ===0 ){
-        throw new Error("Sorry, query length must be longer than 1 letter")
-    }
+    async searchByKeyboards(query: string) {
+            if (!query || query.trim().length === 0) {
+                throw new Error("Sorry, query length must be longer than 1 letter");
+           }
 
+            const read_db = await fs.readFile(path.join(_dirName, "..", "DATA", "TASKS.json"), "utf8");
+            const isJSON_db:  NotesDTO[] = JSON.parse(read_db);
 
-    const read_db = await fs.readFile(path.join(_dirName,'..','DATA','TASKS.json'),'utf8')
-    const isJSON_db:CreateNoteDTO[] = JSON.parse(read_db) 
+            const foundNotes = isJSON_db.filter((note) => {
+            const word = Array.from(note.content).filter((letter) => letter !== " ").join("");
+            const key: string = Array.from(query).filter((l) => l !== " ").join("");
+            return (word.toLocaleLowerCase().startsWith(key.toLocaleLowerCase()) || word.toLocaleLowerCase() === key.toLocaleLowerCase());
+            });
 
-    const foundNotes = isJSON_db.filter(note=>{
-        let word = Array.from(note.content).filter(letter => letter !==" ").join("")
-        let key:string = Array.from(query).filter((l)=>l !==" ").join('') 
-        return word.toLocaleLowerCase().startsWith(key.toLocaleLowerCase()) ||  word.toLocaleLowerCase() === key.toLocaleLowerCase()
-    })
-    
-    return foundNotes
-    }
+    return foundNotes;
+  }
 }
